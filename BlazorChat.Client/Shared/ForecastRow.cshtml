@@ -1,0 +1,13 @@
+﻿@using BlazorChat.Shared
+<tr>
+    <td>@Forecast.Date.ToShortDateString()</td>
+    <td>@Forecast.TemperatureC</td>
+    <td>@Forecast.TemperatureF</td>
+    <td>@Forecast.Summary</td>
+</tr>
+
+@functions {
+
+[Parameter]
+WeatherForecast Forecast { get; set; }
+}

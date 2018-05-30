@@ -1,0 +1,21 @@
+﻿@using BlazorChat.Shared
+@page "/"
+@{
+    var forecast = new WeatherForecast
+    {
+        Summary = "Summary text goes here"
+    };
+
+    var chats = new Chat[]
+   {
+       new Chat {Author="Layla", Body="Hello world" },
+        new Chat {Author="World", Body="Hello Layla" }
+   };
+}
+<h1>Chat</h1>
+
+@*Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" Forecast=@forecast />*@
+
+<Message chats=@chats></Message>

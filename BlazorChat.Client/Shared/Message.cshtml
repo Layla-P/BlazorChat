@@ -1,0 +1,18 @@
+﻿@using BlazorChat.Shared
+
+@foreach (var chat in chats)
+{
+
+
+<div class="message">
+    <p class="message-author">From: <strong>@chat.Author</strong></p>
+    <p class="message-body">Message: @chat.Body</p>
+    <hr/>
+</div>
+
+}
+
+@functions{
+    [Parameter]
+    Chat[] chats { get; set; }
+}
