@@ -15,12 +15,12 @@
     </script>
     <script>
         Blazor.registerFunction('setToken', (data) => {
-            localStorage.setItem('token', JSON.stringify(data));
+            localStorage.setItem('token', data);
             return true;
         });
         Blazor.registerFunction('getToken', () => {
             var token = localStorage.getItem('token');
-            console.log(token);
+            console.log('token ' +token);
             return token;
         });
     </script>

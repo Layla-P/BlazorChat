@@ -12,8 +12,8 @@
 
     var chats = new Chat[]
    {
-new Chat {Author="Layla", Body="Hello world" },
-new Chat {Author="World", Body="Hello Layla" }
+//new Chat {Author="Layla", Body="Hello world" },
+//new Chat {Author="World", Body="Hello Layla" }
    };
 }
 <h1>Chat</h1>
@@ -45,13 +45,13 @@ else
     protected override void OnInit()
     {
         string token = RegisteredFunction.Invoke<string>("getToken");
-        if (token != "" || token != null)
+        if (token == null)
         {
-            IsNew = false;
+            IsNew = true;
         }
         else
         {
-            IsNew = true;
+            IsNew = false;
 
         }
     }

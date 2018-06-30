@@ -6,14 +6,14 @@
 <form>
     @if (IsNewChat)
     {
-        <input type="text" asp-for="Author" name="author" placeholder="Enter your username" bind=@chat.Author />
+        <input type="text" asp-for="Author" name="author" placeholder="Enter your username" bind=@chat.author />
     }
     else
     {
         <p>Hey @Author, type your message below:</p>
 
     }
-    <input type="text" asp-for="Body" name="body" placeholder="Type your message..." bind=@chat.Body />
+    <input type="text" asp-for="Body" name="body" placeholder="Type your message..." bind=@chat.body />
     @*<button type="submit" class="btn btn-default"  onclick=@(async () => await SendMessage())>Send</button>*@
     @*<button type="submit" class="btn btn-default" onclick=@SendMessage>Send</button>*@
     <input type="submit" value="Send" onclick="@(async () => await SendMessage())" class="btn btn-default" />
@@ -34,15 +34,15 @@
 
     protected override void OnParametersSet()
     {
-        chat.Author = Author;
-        chat.Body = string.Empty;
+        chat.author = Author;
+        chat.body = string.Empty;
 
     }
 
     private async Task<string> SetToken(string author)
     {
         var token = await Http.GetJsonAsync<string>($"/api/Twilio/GetToken?identity={author}");
-        RegisteredFunction.Invoke<string>("setToken", token);
+        RegisteredFunction.Invoke<bool>("setToken", token);
         return token;
     }
 
@@ -50,7 +50,7 @@
     {
         if (IsNewChat)
         {
-            Token = await SetToken(chat.Author);
+            Token = await SetToken(chat.author);
             IsNewChat = false;
         }
         await Http.SendJsonAsync(HttpMethod.Post, "/api/Twilio/Create", chat);

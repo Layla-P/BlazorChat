@@ -40,7 +40,7 @@ namespace BlazorChat.Server.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<JsonResult> GetToken(string identity)
+        public async Task<string> GetToken(string identity)
         {
             if ( identity == null)
             {
@@ -52,13 +52,13 @@ namespace BlazorChat.Server.Controllers
                 .Generate(identity)
                 .ConfigureAwait(false);
 
-            return Json(new { identity, token });
+            return token;
         }
 
         [HttpPost("[action]")]
-        public async Task Create(Chat chat)
+        public async Task Create([FromBody]Chat chat)
         {
-            Console.WriteLine(chat.Author + " " + chat.Body);
+            Console.WriteLine(chat.author + " " + chat.body);
         }
 
         private void ProvisionSyncDefaultService(string serviceSid)
