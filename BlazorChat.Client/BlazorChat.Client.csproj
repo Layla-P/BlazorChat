@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Shared\ChatForm.cshtml" />
     <None Include="Shared\ForecastRow.cshtml" />
     <None Include="Shared\Message.cshtml" />
   </ItemGroup>
@@ -39,6 +40,14 @@
 
   <ItemGroup>
     <Content Remove="Shared\Message.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <BlazorGenerate Remove="Shared\ChatForm.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Shared\ChatForm.cshtml" />
   </ItemGroup>
 
 </Project>

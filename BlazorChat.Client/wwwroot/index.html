@@ -11,6 +11,18 @@
 <body>
     <app>Loading...</app>
 
-    <script type="blazor-boot"></script>
+    <script type="blazor-boot">
+    </script>
+    <script>
+        Blazor.registerFunction('setToken', (data) => {
+            localStorage.setItem('token', JSON.stringify(data));
+            return true;
+        });
+        Blazor.registerFunction('getToken', () => {
+            var token = localStorage.getItem('token');
+            console.log(token);
+            return token;
+        });
+    </script>
 </body>
 </html>

@@ -1,21 +1,63 @@
 ﻿@using BlazorChat.Shared
+@using Microsoft.AspNetCore.Blazor.Browser.Interop
 @page "/"
+@inject HttpClient Http
+
+
 @{
-    var forecast = new WeatherForecast
-    {
-        Summary = "Summary text goes here"
-    };
+    //var forecast = new WeatherForecast
+    //{
+    //    Summary = "Summary text goes here"
+    //};
 
     var chats = new Chat[]
    {
-       new Chat {Author="Layla", Body="Hello world" },
-        new Chat {Author="World", Body="Hello Layla" }
+new Chat {Author="Layla", Body="Hello world" },
+new Chat {Author="World", Body="Hello Layla" }
    };
 }
 <h1>Chat</h1>
 
-@*Welcome to your new app.
+@if (IsNew)
+{
 
-<SurveyPrompt Title="How is Blazor working for you?" Forecast=@forecast />*@
+    <ChatForm Author=@Author IsNewChat=@IsNew></ChatForm>
+}
+else
+{
 
-<Message chats=@chats></Message>
+    <Message chats=@chats></Message>
+    <ChatForm Author=@Author></ChatForm>
+
+}
+
+
+
+
+@functions{
+
+    private string Author { get; set; }
+    private bool IsNew { get; set; } = true;
+
+
+
+
+    protected override void OnInit()
+    {
+        string token = RegisteredFunction.Invoke<string>("getToken");
+        if (token != "" || token != null)
+        {
+            IsNew = false;
+        }
+        else
+        {
+            IsNew = true;
+
+        }
+    }
+
+}
+
+
+
+

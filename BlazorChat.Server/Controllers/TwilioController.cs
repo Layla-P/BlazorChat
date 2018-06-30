@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlazorChat.Server.Services;
 using BlazorChat.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -16,10 +17,12 @@ namespace BlazorChat.Server.Controllers
     [Produces("application/json")]
     public class TwilioController : Controller
     {
-        public TwilioAccount _account;
-        public TwilioController(IOptions<TwilioAccount> account)
+        private readonly TwilioAccount _account;
+        private readonly ITokenGenerator _tokenGenerator;
+        public TwilioController(IOptions<TwilioAccount> account, ITokenGenerator tokenGenerator)
         {
             _account = account.Value;
+            _tokenGenerator = tokenGenerator;
 
             if (_account.SyncServiceSid == String.Empty)
             {
@@ -37,53 +40,25 @@ namespace BlazorChat.Server.Controllers
         }
 
         [HttpGet("[action]")]
-        public JsonResult Token()
+        public async Task<JsonResult> GetToken(string identity)
         {
-            // This can be tracked internally by your web app.
-            var identity = randomUserId();
-
-
-            var grants = new HashSet<IGrant>();
-
-            var videoGrant = new VideoGrant();
-
-            grants.Add(videoGrant);
-
-            if (_account.ChatServiceSid != String.Empty)
+            if ( identity == null)
             {
-                // Create a "grant" which enables a client to use IPM as a given user,
-                // on a given device.
-                var chatGrant = new ChatGrant()
-                {
-                    ServiceSid = _account.ChatServiceSid,
-                };
-
-                grants.Add(chatGrant);
+                identity = randomUserId();
             }
 
-            if (_account.SyncServiceSid != String.Empty)
-            {
-                var syncGrant = new SyncGrant()
-                {
-                    ServiceSid = _account.SyncServiceSid
-                };
+            var token = await 
+                _tokenGenerator
+                .Generate(identity)
+                .ConfigureAwait(false);
 
-                grants.Add(syncGrant);
-            }
+            return Json(new { identity, token });
+        }
 
-            var token = new Token(
-                _account.AccountSid,
-                _account.ApiKey,
-                _account.ApiSecret,
-                identity,
-                grants: grants
-            ).ToJwt();
-
-            return new JsonResult(new Dictionary<string, string>()
-            {
-                {"identity", identity},
-                {"token", token}
-            });
+        [HttpPost("[action]")]
+        public async Task Create(Chat chat)
+        {
+            Console.WriteLine(chat.Author + " " + chat.Body);
         }
 
         private void ProvisionSyncDefaultService(string serviceSid)

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using BlazorChat.Server.Services;
 
 namespace BlazorChat.Server
 {
@@ -22,6 +23,7 @@ namespace BlazorChat.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<TwilioAccount>(Configuration.GetSection("TwilioAccount"));
+            services.AddScoped<ITokenGenerator, TokenGenerator>();
 
             services.AddMvc();
 

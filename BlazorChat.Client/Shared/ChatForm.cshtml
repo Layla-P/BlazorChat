@@ -1,0 +1,58 @@
+﻿@using BlazorChat.Shared
+@using Microsoft.AspNetCore.Blazor.Browser.Interop
+@inject HttpClient Http
+
+
+<form>
+    @if (IsNewChat)
+    {
+        <input type="text" asp-for="Author" name="author" placeholder="Enter your username" bind=@chat.Author />
+    }
+    else
+    {
+        <p>Hey @Author, type your message below:</p>
+
+    }
+    <input type="text" asp-for="Body" name="body" placeholder="Type your message..." bind=@chat.Body />
+    @*<button type="submit" class="btn btn-default"  onclick=@(async () => await SendMessage())>Send</button>*@
+    @*<button type="submit" class="btn btn-default" onclick=@SendMessage>Send</button>*@
+    <input type="submit" value="Send" onclick="@(async () => await SendMessage())" class="btn btn-default" />
+</form>
+
+
+@functions {
+    [Parameter]
+    string Author { get; set; }
+
+    [Parameter]
+    bool IsNewChat { get; set; }
+
+    [Parameter]
+    string Token { get; set; }
+
+    Chat chat = new Chat();
+
+    protected override void OnParametersSet()
+    {
+        chat.Author = Author;
+        chat.Body = string.Empty;
+
+    }
+
+    private async Task<string> SetToken(string author)
+    {
+        var token = await Http.GetJsonAsync<string>($"/api/Twilio/GetToken?identity={author}");
+        RegisteredFunction.Invoke<string>("setToken", token);
+        return token;
+    }
+
+    protected async Task SendMessage()
+    {
+        if (IsNewChat)
+        {
+            Token = await SetToken(chat.Author);
+            IsNewChat = false;
+        }
+        await Http.SendJsonAsync(HttpMethod.Post, "/api/Twilio/Create", chat);
+    }
+}
